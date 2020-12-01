@@ -4,11 +4,14 @@ import pygame, sys
 from pygame import *
 import os
 import random
+import arcade
+
 WIDTH=800
 HEIGHT=600
 N_MASKS=10
+score=0
 
-class MyExcitingGame():
+class collectingmasks():
 
 
   def __init__(self):
@@ -21,13 +24,6 @@ class MyExcitingGame():
     # Don't quit yet.
     self.done = False
 
-    # Set the character's initial position.
-    self.x = 0
-    self.y = 0
-
-
-  def run(self):
-    
     mask = pygame.image.load('m2.jpeg').convert()
     mask = pygame.transform.scale(mask,(75,75))
     color = (255, 0, 0)  # rgb. This is red.
@@ -39,7 +35,6 @@ class MyExcitingGame():
         multi_masks_pos.append(pos)
         mask_rect = mask.get_rect(center=pos)
     while not self.done:
-      # Look for keypresses and set member variables based on them.
 
  
       self.screen.fill((255, 255, 255))   # white
@@ -58,10 +53,22 @@ class MyExcitingGame():
     # Throttle screen updates to sixty times per second.
       self.clock.tick(60)
 
-      # main
-game = MyExcitingGame()
-game.run()
+      
+
+# Check whether the player has intersected with any masks.
+# for mask in multi_masks_pos[:]:
+#     if player.colliderect(mask):
+#        multi_masks_pos.remove(mask)
+#        score=score+1
+#        print("Score:", score)
+
+# main
+game = collectingmasks()
 
 pygame.QUIT
+
+
+
+
 
 #https://noidea.dog/blog/pygame-adventures
