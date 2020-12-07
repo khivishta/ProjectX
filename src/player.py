@@ -23,5 +23,7 @@ class Player(pygame.sprite.Sprite):
            self.speedy = -5
        if keypress [pygame.K_d]:
            self.speedx = 5
+       if keypress [pygame.K_ESCAPE]:
+           pygame.quit()
        self.rect.x += self.speedx
        self.rect.y += self.speedy
