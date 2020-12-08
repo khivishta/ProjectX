@@ -50,7 +50,7 @@ map3 = [
     [1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
     [1, 1, 0, 0, 1, 1, 0, 0, 0, 0],]
 
-background_group = [map1,map2,map3]
+
 
 class Game:
     def __init__(self):
@@ -66,9 +66,10 @@ class Game:
         self.ends=Ends(WINDOW_SIZE)
         self.score = 0
         self.endgame=0
+        self.background_group = [map1,map2,map3]
 
         #generating random maze
-        background = random.choice(background_group)
+        background = random.choice(self.background_group)
         #height of maze contain x lists
         maze_height = len(background)
         #length of first list inside list 
@@ -137,6 +138,7 @@ class Game:
             self.player.rect.x += self.player.speedx
             self.player.rect.y += self.player.speedy
         else:
+            while True:
                 pygame.display.flip()
                 self.screen.fill((0,0,0))
                 myfont = pygame.font.SysFont("Comic Sans MS", 50)
@@ -144,6 +146,7 @@ class Game:
                 text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
                 self.screen.blit(text, text_rect)
                 pygame.display.update()
+                check_close_event()
         
       
         # main loop
@@ -183,14 +186,15 @@ class Game:
                     text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
                     self.screen.blit(text, text_rect)
                     pygame.display.update()
-                    time.sleep(5)
-                    pygame.quit()
-                    sys.exit()
+                    check_close_event()
 
-            for event in pygame.event.get():
+            check_close_event()
+
+def check_close_event():
+    for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    self.done = True        
-
+                    self.done = True 
+                
 game = Game()
 game.run()
