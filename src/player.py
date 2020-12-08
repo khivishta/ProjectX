@@ -11,19 +11,24 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
         
     def update(self):
-       self.speedx = 0
-       self.speedy = 0 
-       keypress = pygame.key.get_pressed()
-       
-       if keypress [pygame.K_a]:
-           self.speedx = -5
-       if keypress [pygame.K_s]:
-           self.speedy = 5
-       if keypress [pygame.K_w]:
-           self.speedy = -5
-       if keypress [pygame.K_d]:
-           self.speedx = 5
-       if keypress [pygame.K_ESCAPE]:
-           pygame.quit()
-       self.rect.x += self.speedx
-       self.rect.y += self.speedy
+        self.speedx = 0
+        self.speedy = 0 
+        keypress = pygame.key.get_pressed()
+        if self.rect.centerx > 800:
+            self.rect.centerx = 800
+        if self.rect.centerx < 0:
+            self.rect.centerx = 0
+        if self.rect.centery > 600:
+            self.rect.centery = 600
+        if self.rect.centery < 0:
+            self.rect.centery = 0
+
+        if keypress [pygame.K_a]:
+            self.rect.centerx -= 5
+        if keypress [pygame.K_s]:
+            self.rect.centery += 5
+        if keypress [pygame.K_w]:
+            self.rect.centery -= 5
+        if keypress [pygame.K_d]:
+            self.rect.centerx += 5
+    

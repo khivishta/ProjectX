@@ -2,7 +2,7 @@ import pygame
 import time
 import sys
 import random 
-from block import Block
+from block import Block, Ends
 from mask import Mask
 from player import Player
 
@@ -28,26 +28,26 @@ map1 = [
 map2 = [
     [0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
     [0, 1, 0, 1, 0, 1, 1, 1, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-    [0, 1, 0, 1, 0, 1, 1, 0, 1, 0],
-    [0, 1, 0, 0, 0, 1, 1, 1, 1, 0],
-    [0, 1, 0, 1, 1, 0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0, 0, 1, 1, 1, 1],
+    [0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 1, 1, 1, 0, 1, 0],
+    [0, 1, 1, 0, 0, 0, 1, 0, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 1, 1, 1, 1],
     [0, 1, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 1, 0, 1, 1, 0, 1, 1, 1, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],]
+    [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],]
 
 map3 = [
-    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 1, 1, 1, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-    [0, 1, 0, 1, 0, 1, 1, 0, 1, 0],
-    [0, 1, 0, 0, 0, 1, 1, 1, 1, 0],
-    [0, 1, 0, 1, 1, 0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0, 0, 1, 1, 1, 1],
-    [0, 1, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 1, 0, 1, 1, 0, 1, 1, 1, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],]
+    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1],
+    [0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 0, 1, 0, 1],
+    [0, 0, 1, 0, 0, 0, 1, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+    [1, 1, 0, 0, 1, 1, 0, 0, 0, 0],]
 
 background_group = [map1,map2,map3]
 
@@ -60,8 +60,11 @@ class Game:
         self.all_masks = pygame.sprite.Group()
         self.all_blocks = pygame.sprite.Group()
         self.all_players = pygame.sprite.Group()
+        self.all_ends = pygame.sprite.Group()
         self.player = Player()
+        self.ends = Ends()
         self.score = 0
+        self.endgame = 0
         
        
 
@@ -99,21 +102,29 @@ class Game:
         self.done = False
         pygame.display.set_caption("Mask Warriors")
         self.all_players.add(self.player)
+        self.all_ends.add(self.ends)
+
 
 
         # main loop
 
     def run(self):
+
         while not self.done:
             pygame.display.flip()
             grey = (128, 128, 128)
             self.screen.fill(grey)
+            self.all_ends.update()  
+            self.all_ends.draw(self.screen) 
+            background = pygame.image.load('img/background2.png').convert()
+            self.screen.blit(background, (0, 0))
+            #pygame.draw.rect(screen,pygame.Color("blue"),rectend)
             self.all_blocks.update()
             self.all_masks.update()
-            self.all_players.update()
+            self.all_players.update()      
             self.all_blocks.draw(self.screen)
             self.all_masks.draw(self.screen)
-            self.all_players.draw(self.screen)
+            self.all_players.draw(self.screen)            
             myfont = pygame.font.SysFont("monospace", 20)
             scoretext = myfont.render("Score = "+str(self.score), 1, (255,0,0))
             self.screen.blit(scoretext, (5, 10))
@@ -122,19 +133,23 @@ class Game:
             # check if the player has intersected with any masks attempt , the True removes the mask                
             if pygame.sprite.spritecollide(self.player, self.all_masks, True):                    
                     self.score  += 10
+
+            if pygame.sprite.spritecollide(self.player, self.all_ends, False): 
+                    self.endgame = 1  
                     
-            while self.score == 10 * N_MASKS:
+            if self.endgame == 1:
+                while self.score == 10 * N_MASKS:               
                 # they show winning screen
-                pygame.display.flip()
-                self.screen.fill((0,0,0))
-                myfont = pygame.font.SysFont("monospace", 50)
-                text = myfont.render("You won!", 1, (255,0,0))
-                text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
-                self.screen.blit(text, text_rect)
-                pygame.display.update()
-                time.sleep(5)
-                pygame.quit()
-                sys.exit()
+                    pygame.display.flip()
+                    self.screen.fill((0,0,0))
+                    myfont = pygame.font.SysFont("monospace", 50)
+                    text = myfont.render("You won!", 1, (255,0,0))
+                    text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
+                    self.screen.blit(text, text_rect)
+                    pygame.display.update()
+                    time.sleep(5)
+                    pygame.quit()
+                    sys.exit()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
