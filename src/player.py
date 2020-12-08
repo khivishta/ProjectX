@@ -1,8 +1,6 @@
 import pygame
 
 class Player(pygame.sprite.Sprite):
-    
-    
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((25,25))
@@ -26,14 +24,11 @@ class Player(pygame.sprite.Sprite):
             self.rect.centery = 0
 
         if keypress [pygame.K_a]:
-            self.rect.centerx -= 4
+            self.rect.centerx -= 5
         if keypress [pygame.K_s]:
-            self.rect.centery += 4
+            self.rect.centery += 5
         if keypress [pygame.K_w]:
-            self.rect.centery -= 4
+            self.rect.centery -= 5
         if keypress [pygame.K_d]:
-            self.rect.centerx += 4
+            self.rect.centerx += 5
     
-        if self.rect.centerx in range (720,800) and self.rect.centery in range (540,600):
-            global isOver
-            isOver = True
