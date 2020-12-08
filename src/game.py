@@ -152,7 +152,8 @@ class Game:
         # main loop
 
     def run(self):
-
+        timer = 60
+        dt = 0
         while not self.done:
             pygame.display.flip()
             grey = (128, 128, 128)
@@ -171,6 +172,24 @@ class Game:
             scoretext = myfont.render("Score = "+str(self.score), 1, (255,0,0))
             self.screen.blit(scoretext, (5, 10))
             self.clock.tick(60)
+            
+            # Timer
+            if timer <=0:
+                # Allocated time has fallen below 0, end screen shown, waits for user to close window
+                self.screen.fill((0,0,0))
+                myfont = pygame.font.SysFont("Comic Sans MS", 50)
+                text = myfont.render("You ran out of time!", 1, (255,0,0))
+                text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
+                self.screen.blit(text, text_rect)
+                pygame.display.update()
+                check_close_event()
+                timer = 0
+            else:
+                # timer is decreased by increments of dt, time remaining is displayed 
+                timer -= dt
+                timer_text = myfont.render("Time remaining:"+ str(round(timer)),True,pygame.Color("blue"))
+                self.screen.blit(timer_text, (520,10))
+                dt = self.clock.tick(60)/500
 
             # check if the player has intersected with any masks attempt , the True removes the mask                
             if pygame.sprite.spritecollide(self.player, self.all_masks, True):                    
