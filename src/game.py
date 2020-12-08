@@ -2,7 +2,8 @@ import pygame
 import time
 import sys
 import random 
-from block import Block,Ends
+
+from block import Block, Ends
 from mask import Mask
 from player import Player
 
@@ -28,26 +29,26 @@ map1 = [
 map2 = [
     [0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
     [0, 1, 0, 1, 0, 1, 1, 1, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-    [0, 1, 0, 1, 0, 1, 1, 0, 1, 0],
-    [0, 1, 0, 0, 0, 1, 1, 1, 1, 0],
-    [0, 1, 0, 1, 1, 0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0, 0, 1, 1, 1, 1],
+    [0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 1, 1, 1, 0, 1, 0],
+    [0, 1, 1, 0, 0, 0, 1, 0, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 1, 1, 1, 1],
     [0, 1, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 1, 0, 1, 1, 0, 1, 1, 1, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],]
+    [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],]
 
 map3 = [
-    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 1, 1, 1, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-    [0, 1, 0, 1, 0, 1, 1, 0, 1, 0],
-    [0, 1, 0, 0, 0, 1, 1, 1, 1, 0],
-    [0, 1, 0, 1, 1, 0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0, 0, 1, 1, 1, 1],
-    [0, 1, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 1, 0, 1, 1, 0, 1, 1, 1, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],]
+    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1],
+    [0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 0, 1, 0, 1],
+    [0, 0, 1, 0, 0, 0, 1, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+    [1, 1, 0, 0, 1, 1, 0, 0, 0, 0],]
 
 background_group = [map1,map2,map3]
 
@@ -91,7 +92,9 @@ class Game:
         #placing 10 masks on screen randomly
         for i in range(N_MASKS):
             mask = Mask(WINDOW_SIZE)
+
             #code so that masks does not overlap with each other and also with blocks and player, false does not remove anything
+
             while pygame.sprite.spritecollide(mask, self.all_sprites, False):           
                 mask = Mask(WINDOW_SIZE)
             #if false  stop looping , and place mask inside the sprite
@@ -142,10 +145,11 @@ class Game:
                 self.screen.blit(text, text_rect)
                 pygame.display.update()
         
-       
+      
         # main loop
 
     def run(self):
+
         while not self.done:
             pygame.display.flip()
             grey = (128, 128, 128)
@@ -159,6 +163,7 @@ class Game:
             
             self.all_masks.draw(self.screen)
             self.all_players.draw(self.screen)
+
             myfont = pygame.font.SysFont("monospace", 20)
             scoretext = myfont.render("Score = "+str(self.score), 1, (255,0,0))
             self.screen.blit(scoretext, (5, 10))
@@ -174,6 +179,7 @@ class Game:
                     self.screen.fill((0,0,0))
                     myfont = pygame.font.SysFont("They definitely dont have this installed Gothic",50)
                     text = myfont.render("You won with a score of " + str(self.score), 1, (255,0,0))
+
                     text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
                     self.screen.blit(text, text_rect)
                     pygame.display.update()
@@ -183,6 +189,7 @@ class Game:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    pygame.quit()
                     self.done = True        
 
 game = Game()
