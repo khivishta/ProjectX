@@ -2,11 +2,12 @@ import pygame
 import time
 import sys
 import random 
+
 from block import Block, Ends
 from mask import Mask
 from player import Player
 
-# defining variable
+# defining variables
 
 WINDOW_SIZE = (800, 600) #tuple for screen size
 N_MASKS = 10
@@ -60,13 +61,11 @@ class Game:
         self.all_masks = pygame.sprite.Group()
         self.all_blocks = pygame.sprite.Group()
         self.all_players = pygame.sprite.Group()
-        self.all_ends = pygame.sprite.Group()
-        self.player = Player()
-        self.ends = Ends()
+        self.all_ends=pygame.sprite.Group()
+        self.player = Player(WINDOW_SIZE)
+        self.ends=Ends(WINDOW_SIZE)
         self.score = 0
-        self.endgame = 0
-        
-       
+        self.endgame=0
 
         #generating random maze
         background = random.choice(background_group)
@@ -93,19 +92,60 @@ class Game:
         #placing 10 masks on screen randomly
         for i in range(N_MASKS):
             mask = Mask(WINDOW_SIZE)
-            #code so that masks does not overlap with each other and also with blocks and player
+
+            #code so that masks does not overlap with each other and also with blocks and player, false does not remove anything
+
             while pygame.sprite.spritecollide(mask, self.all_sprites, False):           
                 mask = Mask(WINDOW_SIZE)
             #if false  stop looping , and place mask inside the sprite
             self.all_sprites.add(mask)
             self.all_masks.add(mask)
         self.done = False
+
         pygame.display.set_caption("Mask Warriors")
         self.all_players.add(self.player)
+
+
         self.all_ends.add(self.ends)
+        self.all_sprites.add(self.ends)
 
+    def update(self):
+        self.player.speedx = 0
+        self.player.speedy = 0 
+        keypress = pygame.key.get_pressed()
+        
+        if self.player.rect.centerx > WINDOW_SIZE[0]-(self.player.width/2):
+            self.player.rect.centerx = WINDOW_SIZE[0]-(self.player.width/2)
+        if self.player.rect.centerx < (self.player.width/2):
+            self.player.rect.centerx = (self.player.width/2)
+        if self.player.rect.centery > WINDOW_SIZE[1]-(self.player.height/2):
+            self.player.rect.centery = WINDOW_SIZE[1]-(self.player.height/2)
+        if self.player.rect.centery < (self.player.height/2):
+            self.player.rect.centery = (self.player.height/2)
 
+        if keypress [pygame.K_a]:
+            self.player.speedx = -5
+        if keypress [pygame.K_s]:
+            self.player.speedy = 5
+        if keypress [pygame.K_w]:
+            self.player.speedy = -5
+        if keypress [pygame.K_d]:
+            self.player.speedx = 5
 
+            
+        if not pygame.sprite.spritecollide(self.player, self.all_blocks, False):
+            self.player.rect.x += self.player.speedx
+            self.player.rect.y += self.player.speedy
+        else:
+                pygame.display.flip()
+                self.screen.fill((0,0,0))
+                myfont = pygame.font.SysFont("Comic Sans MS", 50)
+                text = myfont.render("You crashed!", 1, (255,0,0))
+                text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
+                self.screen.blit(text, text_rect)
+                pygame.display.update()
+        
+      
         # main loop
 
     def run(self):
@@ -114,17 +154,16 @@ class Game:
             pygame.display.flip()
             grey = (128, 128, 128)
             self.screen.fill(grey)
-            self.all_ends.update()  
-            self.all_ends.draw(self.screen) 
-            background = pygame.image.load('img/background2.png').convert()
-            self.screen.blit(background, (0, 0))
-            #pygame.draw.rect(screen,pygame.Color("blue"),rectend)
+            self.all_ends.update()
+            self.all_ends.draw(self.screen)
             self.all_blocks.update()
-            self.all_masks.update()
-            self.all_players.update()      
             self.all_blocks.draw(self.screen)
+            self.all_masks.update()
+            self.update()
+            
             self.all_masks.draw(self.screen)
-            self.all_players.draw(self.screen)            
+            self.all_players.draw(self.screen)
+
             myfont = pygame.font.SysFont("monospace", 20)
             scoretext = myfont.render("Score = "+str(self.score), 1, (255,0,0))
             self.screen.blit(scoretext, (5, 10))
@@ -134,16 +173,13 @@ class Game:
             if pygame.sprite.spritecollide(self.player, self.all_masks, True):                    
                     self.score  += 10
 
-            if pygame.sprite.spritecollide(self.player, self.all_ends, False): 
-                    self.endgame = 1  
-                    
-            if self.endgame == 1:
-                while self.score == 10 * N_MASKS:               
+            while pygame.sprite.spritecollide(self.player, self.all_ends, False):        
                 # they show winning screen
                     pygame.display.flip()
                     self.screen.fill((0,0,0))
-                    myfont = pygame.font.SysFont("monospace", 50)
-                    text = myfont.render("You won!", 1, (255,0,0))
+                    myfont = pygame.font.SysFont("They definitely dont have this installed Gothic",50)
+                    text = myfont.render("You won with a score of " + str(self.score), 1, (255,0,0))
+
                     text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
                     self.screen.blit(text, text_rect)
                     pygame.display.update()
