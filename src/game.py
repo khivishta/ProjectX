@@ -104,6 +104,11 @@ class Game:
         self.all_players.add(self.player)
         self.all_ends.add(self.ends)
 
+        bgm = pygame.mixer.music.load("src/se/bgm.ogg")
+        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.play()
+        pygame.mixer.music.play(-1, 0)
+        #add the bgm
 
 
         # main loop
@@ -112,13 +117,13 @@ class Game:
 
         while not self.done:
             pygame.display.flip()
+            pygame.mixer.init()	
             grey = (128, 128, 128)
             self.screen.fill(grey)
             self.all_ends.update()  
             self.all_ends.draw(self.screen) 
             background = pygame.image.load('img/background2.png').convert()
             self.screen.blit(background, (0, 0))
-            #pygame.draw.rect(screen,pygame.Color("blue"),rectend)
             self.all_blocks.update()
             self.all_masks.update()
             self.all_players.update()      
@@ -130,15 +135,30 @@ class Game:
             self.screen.blit(scoretext, (5, 10))
             self.clock.tick(60)
 
+
+            # check if the player has crashed on the wall                
+            if pygame.sprite.spritecollide(self.player, self.all_blocks, False):                    
+                    sound_crash = pygame.mixer.Sound("src/se/crash.ogg")  
+                    sound_crash.set_volume(0.2)
+                    #add the sound for collect
+                    self.score  -= 5   
+                    sound_crash.play() 
+                    time.sleep(0.2)   
+            
             # check if the player has intersected with any masks attempt , the True removes the mask                
             if pygame.sprite.spritecollide(self.player, self.all_masks, True):                    
+                    sound_collet = pygame.mixer.Sound("src/se/collect.ogg")  
+                    sound_collet.set_volume(0.2)
+                    #add the sound for collect
                     self.score  += 10
+                    sound_collet.play()
 
+            # check if the player has arrived the end point    
             if pygame.sprite.spritecollide(self.player, self.all_ends, False): 
                     self.endgame = 1  
                     
             if self.endgame == 1:
-                while self.score == 10 * N_MASKS:               
+                if self.score >= 8 * N_MASKS:               
                 # they show winning screen
                     pygame.display.flip()
                     self.screen.fill((0,0,0))
@@ -150,6 +170,19 @@ class Game:
                     time.sleep(5)
                     pygame.quit()
                     sys.exit()
+                
+                else:
+                    pygame.display.flip()
+                    self.screen.fill((0,0,0))
+                    myfont = pygame.font.SysFont("monospace", 50)
+                    text = myfont.render("You lose!", 1, (255,0,0))
+                    text_rect = text.get_rect(center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
+                    self.screen.blit(text, text_rect)
+                    pygame.display.update()
+                    time.sleep(5)
+                    pygame.quit()
+                    sys.exit()
+                
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
