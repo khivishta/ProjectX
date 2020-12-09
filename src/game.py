@@ -213,7 +213,6 @@ def check_close_event():
     for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    self.done = True 
                 
 game = Game()
 game.run()
