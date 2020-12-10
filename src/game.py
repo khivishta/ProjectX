@@ -112,7 +112,7 @@ class Game:
         self.all_ends.add(self.ends)
         self.all_sprites.add(self.ends)
 
-        # add the bgm
+        # add the background music
         bgm = pygame.mixer.music.load("sound/bgm.ogg")
         pygame.mixer.music.set_volume(0.2)
         pygame.mixer.music.play()
@@ -151,9 +151,8 @@ class Game:
         while self.intro:
             check_close_event()
             self.screen.fill(grey)
-            myfont = pygame.font.SysFont(
-                    "They definitely dont have this installed Gothic", 50)
-            text = myfont.render("Press any key to start!", 1, (255, 0, 0))
+            myfont = pygame.font.SysFont("malgungothic", 50)
+            text = myfont.render("Press any key to start", 1, (255, 0, 0))
             text_rect = text.get_rect(
                     center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
             self.screen.blit(text, text_rect)
@@ -163,7 +162,7 @@ class Game:
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     self.intro = False
-        timer = 10
+        timer = 15
         dt = 0
         while not self.done:
 
@@ -225,13 +224,12 @@ class Game:
                 pygame.mixer.pause()
                 pygame.display.flip()
                 self.screen.fill((0, 0, 0))
-                myfont = pygame.font.SysFont(
-                    "They definitely dont have this installed Gothic", 50)
+                myfont = pygame.font.SysFont("rockwellextra", 45)
                 text = ""
                 if timer <= 0:
                     text = myfont.render("You ran out of time!", 1, (255, 0, 0))
                 elif self.score >= 8 * N_MASKS:
-                    # they show winning screen
+                    # show winning screen
                     text = myfont.render(
                         "You won with a score of " + str(self.score), 1, (255, 0, 0))
                 else:
