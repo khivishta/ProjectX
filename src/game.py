@@ -236,20 +236,39 @@ class Game:
                 myfont = pygame.font.SysFont("rockwellextra", 45)
                 text = ""
                 if timer <= 0:
+                    pygame.mixer.music.stop()
+                    sound_lose = pygame.mixer.Sound("sound/lose.ogg")
+                    sound_lose.set_volume(0.1)
+                    sound_lose.play()        
                     text = myfont.render(
                         "You ran out of time!", 1, (255, 0, 0))
+                    time.sleep(7)
+
                 elif self.score >= 8 * N_MASKS:
+                    pygame.mixer.music.stop()
+                    sound_win = pygame.mixer.Sound("sound/win.ogg")
+                    sound_win.set_volume(0.1)
+                    sound_win.play()
                     # show winning screen
                     text = myfont.render(
                         "You won with a score of " + str(self.score), 1, (255, 0, 0))
+                    time.sleep(5)
+
                 else:
+                    pygame.mixer.music.stop()
+                    sound_lose = pygame.mixer.Sound("sound/lose.ogg")
+                    sound_lose.set_volume(0.1)
+                    sound_lose.play()
                     text = myfont.render(
-                        "You lose! your score was only: " + str(self.score), 1, (255, 0, 0))
+                        "Your score was only: " + str(self.score), 1, (255, 0, 0))
+                    time.sleep(7)
 
                 text_rect = text.get_rect(
                     center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
                 self.screen.blit(text, text_rect)
                 pygame.display.update()
+                
+                time.sleep(6)
                 game = Game() # initialize variables
                 game.run()  
                 check_close_event()
