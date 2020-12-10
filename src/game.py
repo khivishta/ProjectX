@@ -54,7 +54,7 @@ map3 = [
 class Game:
     def __init__(self):
         pygame.init()
-     
+
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.clock = pygame.time.Clock()
         self.all_sprites = pygame.sprite.Group()
@@ -106,7 +106,6 @@ class Game:
             self.all_masks.add(mask)
         self.done = False
 
-        
         self.all_players.add(self.player)
 
         self.all_ends.add(self.ends)
@@ -147,14 +146,14 @@ class Game:
         # main loop
 
     def run(self):
+        check_close_event()
         grey = (128, 128, 128)
         while self.intro:
-            check_close_event()
             self.screen.fill(grey)
             myfont = pygame.font.SysFont("malgungothic", 50)
             text = myfont.render("Press any key to start", 1, (255, 0, 0))
             text_rect = text.get_rect(
-                    center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
+                center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
             self.screen.blit(text, text_rect)
             pygame.display.update()
             self.clock.tick(15)
@@ -162,12 +161,17 @@ class Game:
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     self.intro = False
+                elif event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            
+            
         timer = 15
         dt = 0
         while not self.done:
-
+            check_close_event()
             pygame.display.flip()
-            
+
             self.screen.fill(grey)
             self.all_ends.update()
             self.all_ends.draw(self.screen)
@@ -191,7 +195,13 @@ class Game:
                 sound_crash.set_volume(0.2)
                 # add the sound for collect
                 self.score -= 3
-                timer -= 2
+                timer -= 1
+                myfont_crash = pygame.font.SysFont("monospace", 50)
+                crashtext = myfont_crash.render(
+                    'Get away from the wall!', 1, (255, 0, 0))
+                self.screen.blit(crashtext, (50, 200))
+                sound_crash.play()
+                time.sleep(0.2)
                 sound_crash.play()
                 time.sleep(0.2)
 
@@ -200,7 +210,6 @@ class Game:
                 # Allocated time has fallen below 0, end screen shown, waits for user to close window
                 self.endgame = 1
 
-            
             # timer is decreased by increments of dt, time remaining is displayed
             timer -= dt
             timer_text = myfont.render(
@@ -227,22 +236,23 @@ class Game:
                 myfont = pygame.font.SysFont("rockwellextra", 45)
                 text = ""
                 if timer <= 0:
-                    text = myfont.render("You ran out of time!", 1, (255, 0, 0))
+                    text = myfont.render(
+                        "You ran out of time!", 1, (255, 0, 0))
                 elif self.score >= 8 * N_MASKS:
                     # show winning screen
                     text = myfont.render(
                         "You won with a score of " + str(self.score), 1, (255, 0, 0))
                 else:
-                    text = myfont.render("You lose! your score was only: "  + str(self.score), 1, (255, 0, 0))
-                    
+                    text = myfont.render(
+                        "You lose! your score was only: " + str(self.score), 1, (255, 0, 0))
+
                 text_rect = text.get_rect(
                     center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
                 self.screen.blit(text, text_rect)
                 pygame.display.update()
+                game = Game() # initialize variables
+                game.run()  
                 check_close_event()
-
-            check_close_event()
-
 
 def check_close_event():
     for event in pygame.event.get():
