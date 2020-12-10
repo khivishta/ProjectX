@@ -242,7 +242,6 @@ class Game:
                     sound_lose.play()        
                     text = myfont.render(
                         "You ran out of time!", 1, (255, 0, 0))
-                    time.sleep(7)
 
                 elif self.score >= 8 * N_MASKS:
                     pygame.mixer.music.stop()
@@ -252,7 +251,6 @@ class Game:
                     # show winning screen
                     text = myfont.render(
                         "You won with a score of " + str(self.score), 1, (255, 0, 0))
-                    time.sleep(5)
 
                 else:
                     pygame.mixer.music.stop()
@@ -261,7 +259,7 @@ class Game:
                     sound_lose.play()
                     text = myfont.render(
                         "Your score was only: " + str(self.score), 1, (255, 0, 0))
-                    time.sleep(7)
+
 
                 text_rect = text.get_rect(
                     center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
