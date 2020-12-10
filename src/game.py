@@ -215,7 +215,7 @@ class Game:
             # check if the player has intersected with any masks attempt , the True removes the mask
             if pygame.sprite.spritecollide(self.player, self.all_masks, True):
                 sound_collet = pygame.mixer.Sound("sound/collect.ogg")
-                sound_collet.set_volume(0.2)
+                sound_collet.set_volume(0.1)
                 # add the sound for collect
                 self.score += 10
                 timer += 4
@@ -225,34 +225,46 @@ class Game:
                 self.endgame = 1
 
             while self.endgame == 1:
-                pygame.mixer.pause()
                 pygame.display.flip()
                 self.screen.fill((0, 0, 0))
                 myfont = pygame.font.SysFont(
                     "They definitely dont have this installed Gothic", 50)
                 text = ""
                 if timer <= 0:
-                    text = myfont.render("You ran out of time!", 1, (255, 0, 0))
-                    GameDone = True
                     pygame.mixer.music.stop()
-                    sound_collet = pygame.mixer.Sound("sound/collect.ogg")
-                    sound_collet.set_volume(0.2)
+                    sound_lose = pygame.mixer.Sound("sound/lose.ogg")
+                    sound_lose.set_volume(0.1)
+                    sound_lose.play()                   
+                    text = myfont.render("You ran out of time!", 1, (255, 0, 0))
+                    time.sleep(7)
+                    GameDone = True
+                    
+                    
+                    
 
                 elif self.score >= 8 * N_MASKS:
+                    pygame.mixer.music.stop()
+                    sound_win = pygame.mixer.Sound("sound/win.ogg")
+                    sound_win.set_volume(0.1)
+                    sound_win.play()
                     # they show winning screen
                     text = myfont.render(
                         "You won with a score of " + str(self.score), 1, (255, 0, 0))
+                    time.sleep(5)
                     GameDone = True
-                    pygame.mixer.music.stop()
-                    sound_collet = pygame.mixer.Sound("sound/collect.ogg")
-                    sound_collet.set_volume(0.2)
+                    
+                    
 
                 else:
-                    text = myfont.render("You lose! your score was only: "  + str(self.score), 1, (255, 0, 0))
-                    GameDone = True
                     pygame.mixer.music.stop()
-                    sound_collet = pygame.mixer.Sound("sound/collect.ogg")
-                    sound_collet.set_volume(0.2)
+                    sound_lose = pygame.mixer.Sound("sound/lose.ogg")
+                    sound_lose.set_volume(0.1)
+                    sound_lose.play()
+                    text = myfont.render("You lose! your score was only: "  + str(self.score), 1, (255, 0, 0))
+                    time.sleep(7)
+                    GameDone = True
+                    
+                    
                     
                 text_rect = text.get_rect(
                     center=(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2))
